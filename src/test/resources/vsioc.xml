@@ -1,0 +1,27 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<bean id="outputService" class="org.vitoliu.OutputServiceImpl"></bean>
+	<bean id="helloService" class="org.vitoliu.HelloServiceImpl">
+		<property name="output" value="Doug Lea"></property>
+		<property name="outputService" ref="outputService"></property>
+	</bean>
+
+	<bean id="autoProxyCreator" class="org.vitoliu.aop.AspectAwareAdvisorAutoProxyCreator"></bean>
+
+	<bean id="timeInterceptor" class="org.vitoliu.aop.TimerInterceptor"></bean>
+
+	<!-- 配置AOP -->
+	<bean id="aspectjAspect" class="org.vitoliu.aop.AspectAwareAdvisorAutoProxyCreator">
+		<bean id="timerInterceptor" class="org.vitoliu.aop.TimerInterceptor">
+			<!-- 配置切面 -->
+			<property name="advice" ref="timeInterceptor"></property>
+			<!-- 配置切点 -->
+			<!-- 通过AspectJ表达式可以知道拦截哪个类的哪个方法或哪些方法 -->
+			<property name="expression" value="execution(* org.vitoliu.*.*(..))"></property>
+		</bean>
+	</bean>
+</beans>
